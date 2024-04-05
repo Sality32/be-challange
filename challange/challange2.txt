@@ -1,0 +1,46 @@
+
+--1
+select * from employes e ;
+--2
+select count(*) as totalManager from employes e where e.job_title ilike 'Manager';
+--3
+select e.name as name, e.salary as salary from employes e where e.department ilike 'sales' or e.department ilike 'marketing';
+--4
+select avg(e.salary) as averageSalary from employes e where e.joined_date > current_timestamp - interval '5 years';  
+--5
+select e.name as name, rs.sales as totalSales
+from employes e 
+left join (
+	select sum(s2.sales) as sales, s2.employe_id from sales s2
+	group by s2.employe_id
+	) as rs on e.employe_id = rs.employe_id
+order by totalSales desc
+limit 5
+
+--6
+select e.name, e.salary, avgE.avgSalary from employes e 
+left join (select avg(e.salary) as avgSalary, e.department from employes e 
+group by e.department ) as avgE on e.department = avgE.department
+where e.salary > avgE.avgSalary
+
+--7
+select e.name, s2.totalSales, s2.rank from employes e 
+left join (
+	select s.employe_id, sum(s.sales) as totalSales, row_number () over( order by sum(s.sales) desc) as rank from sales s 
+	group by s.employe_id ) as s2 on e.employe_id = s2.employe_id
+order by rank
+
+--8
+create or replace function employee_salary(dept varchar)
+returns table (name varchar, salary numeric, basic_salary numeric, total_sales numeric, department varchar) language plpgsql
+as $body$
+begin
+	return query
+		select e.name, (e.salary + s2.totalSales) as salary, e.salary, s2.totalSales, e.department from employes e 
+		left join ( select sum(s.sales) as totalSales, s.employe_id from sales s group by s.employe_id) as s2 on e.employe_id = s2.employe_id
+		where e.department ilike dept;
+	return;
+end;
+$body$;
+
+select * from employee_salary('Marketing');
