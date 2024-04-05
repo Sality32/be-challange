@@ -1,0 +1,72 @@
+{
+  "name": "be-challange",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "babel": "babel-node",
+    "start": "npm run babel -- src/index.js",
+    "dev": "nodemon --exec npm run babel -- ./src/index.js",
+    "migration:create": "cross-var sequelize-cli migration:generate --migrations-path=src/database/migrations --name=$npm_config_name",
+    "migration:run": " cross-var sequelize-cli db:migrate ",
+    "migration:undo": "cross-var sequelize-cli db:migrate:undo --name $npm_config_name.js",
+    "migration:undo:all": "cross-var sequelize-cli db:migrate:undo:all",
+    "seed:create": "cross-var sequelize-cli seed:generate --seeders-path=src/database/seeders --name=$npm_config_name",
+    "seed:run": " cross-var sequelize-cli db:seed --seed $npm_config_name.js",
+    "seed:run:all": " sequelize-cli db:seed:all",
+    "seed:undo": "cross-var sequelize-cli db:seed:undo --seed $npm_config_name.js",
+    "seed:undo:all": "sequelize-cli db:seed:undo:all",
+    "db:refresh": "npm run migration:undo:all  && sequelize-cli db:migrate && sequelize-cli db:seed:all",
+    "test": "mocha --require @babel/register --recursive 'test/**/*.test.js'",
+    "test:watch": "nodemon --exec mocha --require @babel/register --recursive 'test/**/*.test.js' ",
+    "coverage": "nyc --reporter=text npm run test"
+  },
+  "keywords": [
+    "expressjs",
+    "mocha",
+    "sequelize",
+    "postgreSQL"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "cross-var": "^1.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-validation": "^4.1.0",
+    "joi": "^17.12.3",
+    "mocha": "^10.4.0",
+    "nodemon": "^3.1.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "pg": "^8.11.5",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.2",
+    "sequelize-cli": "^6.6.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.1",
+    "@babel/core": "^7.24.4",
+    "@babel/eslint-parser": "^7.24.1",
+    "@babel/node": "^7.23.9",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-optional-chaining": "^7.21.0",
+    "@babel/preset-env": "^7.24.4",
+    "@babel/register": "^7.23.7",
+    "@types/glob": "^8.1.0",
+    "chai": "^5.1.0",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.2.5"
+  },
+  "importSort": {
+    ".js, .jsx, .ts, .tsx": {
+      "style": "module"
+    },
+    "sequelize": "^6.32.1"
+  }
+}
